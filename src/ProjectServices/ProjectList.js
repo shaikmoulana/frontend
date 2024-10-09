@@ -325,6 +325,11 @@ function ProjectList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentProject({ client: '', projectName: '', technicalProjectManager: '', salesContact: '', pmo: '', sowSubmittedDate: '', sowSignedDate: '', sowValidTill: '', sowLastExtendedDate: '', technology: [] }); // Reset the department fields        
+        setErrors({ client: '', projectName: '', technicalProjectManager: '', salesContact: '', pmo: '', sowSubmittedDate: '', sowSignedDate: '', sowValidTill: '', sowLastExtendedDate: '', technology: [] }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
 
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
@@ -632,9 +637,9 @@ function ProjectList() {
                     />
                     <InputLabel id="demo-simple-select-label">Technology</InputLabel>
                     <Select
-                        label="Technologies"
+                        label="Technology"
                         //  placeholder="Technologies"
-                        name="technologies"
+                        name="technology"
                         multiple
                         value={currentProject.technology}
                         onChange={handleTechnologyChange}
@@ -745,7 +750,7 @@ function ProjectList() {
                     </LocalizationProvider>
                     {errors.sowLastExtendedDate && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.sowValisowLastExtendedDatedTill}</Typography>}                </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentProject.id ? 'Update' : 'Save'}
                     </Button>

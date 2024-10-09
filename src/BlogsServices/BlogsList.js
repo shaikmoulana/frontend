@@ -262,6 +262,12 @@ function BlogsList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentBlogs({ title: '', author: '', status: '', targetDate: '', completedDate: '', publishedDate: '' }); // Reset the department fields
+        setErrors({ title: '', author: '', status: '', targetDate: '', completedDate: '', publishedDate: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -489,8 +495,8 @@ function BlogsList() {
                                 <TableCell>{Blogs.updatedBy || 'N/A'}</TableCell>
                                 <TableCell>{new Date(Blogs.updatedDate).toLocaleString() || 'N/A'}</TableCell>
                                 <TableCell >
-                                    {/* <IconButton onClick={() => handleUpdate(Blogs)}> */}
-                                    <IconButton onClick={() => setOpen(true)}>
+                                    <IconButton onClick={() => handleUpdate(Blogs)}>
+                                        {/* <IconButton onClick={() => setOpen(true)}> */}
                                         <EditIcon color="primary" />
                                     </IconButton>
                                     <IconButton onClick={() => confirmDelete(Blogs.id)}>
@@ -595,7 +601,7 @@ function BlogsList() {
                     {errors.publishedDate && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.publishedDate}</Typography>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentBlogs.id ? 'Update' : 'Save'}
                     </Button>

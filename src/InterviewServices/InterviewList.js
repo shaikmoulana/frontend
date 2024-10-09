@@ -261,6 +261,12 @@ function InterviewList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentInterview({ sowRequirement: '', name: '', interviewDate: '', yearsOfExperience: '', status: '', on_Boarding: '', recruiter: '' }); // Reset the department fields
+        setErrors({ sowRequirement: '', name: '', interviewDate: '', yearsOfExperience: '', status: '', on_Boarding: '', recruiter: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -581,49 +587,10 @@ function InterviewList() {
                         ))}
                     </Select>
                     {errors.recruiter && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.recruiter}</Typography>}
-                    <TextField
-                        margin="dense"
-                        label="Is Active"
-                        name="isActive"
-                        value={currentInterview.isActive}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Created By"
-                        name="createdBy"
-                        value={currentInterview.createdBy}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Created Date"
-                        name="createdDate"
-                        value={currentInterview.createdDate}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Updated By"
-                        name="updatedBy"
-                        value={currentInterview.updatedBy}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Updated Date"
-                        name="updatedDate"
-                        value={currentInterview.updatedDate}
-                        onChange={handleChange}
-                        fullWidth
-                    />
+
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentInterview.id ? 'Update' : 'Save'}
                     </Button>

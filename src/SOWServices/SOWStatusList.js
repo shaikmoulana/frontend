@@ -147,7 +147,7 @@ function SOWStatusList() {
                 setErrors((prevErrors) => ({ ...prevErrors, status: "" }));
             }
             // Check for uniqueness
-            else if (SOWStatus.some(stat => stat.name.toLowerCase() === value.toLowerCase() && stat.id !== currentSOWStatus.id)) {
+            else if (SOWStatus.some(stat => stat.name === value && stat.id !== currentSOWStatus.id)) {
                 setErrors((prevErrors) => ({ ...prevErrors, status: "" }));
             }
             // Clear the name error if valid
@@ -155,6 +155,12 @@ function SOWStatusList() {
                 setErrors((prevErrors) => ({ ...prevErrors, status: "" }));
             }
         }
+    };
+
+    const handleClose = () => {
+        setCurrentSOWStatus({ status: '', }); // Reset the department fields
+        setErrors({ status: '', }); // Reset the error state
+        setOpen(false); // Close the dialog
     };
 
     const handlePageChange = (event, newPage) => {
@@ -316,7 +322,7 @@ function SOWStatusList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentSOWStatus.id ? 'Update' : 'Save'}
                     </Button>

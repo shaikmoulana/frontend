@@ -211,6 +211,12 @@ function ProjectEmployeeList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentProjectEmployee({ project: '', employee: '', startDate: '', endDate: '' }); // Reset the department fields
+        setErrors({ project: '', employee: '', startDate: '', endDate: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -470,7 +476,7 @@ function ProjectEmployeeList() {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentProjectEmployee.id ? 'Update' : 'Save'}
                     </Button>

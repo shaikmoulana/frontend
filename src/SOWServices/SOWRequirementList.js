@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Select, MenuItem, Table, InputLabel, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography, TableSortLabel, InputAdornment } from '@mui/material';
+import { Checkbox, ListItemText, Select, MenuItem, Table, InputLabel, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography, TableSortLabel, InputAdornment } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -10,6 +10,7 @@ function SOWRequirementList() {
     const [SOWRequirements, setSOWRequirements] = useState([]);
     const [SOWs, setSOWs] = useState([]);
     const [Designations, setDesignations] = useState([]);
+    const [technologies, setTechnologies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
@@ -20,8 +21,8 @@ function SOWRequirementList() {
     const [currentSOWRequirement, setCurrentSOWRequirement] = useState({
         sow: '',
         designation: '',
-        technologies: '',
-        teamSize: ''
+        teamSize: '',
+        technology: []
     });
     const [order, setOrder] = useState('asc'); // Order of sorting: 'asc' or 'desc'
     const [orderBy, setOrderBy] = useState('createdDate'); // Column to sort by
@@ -29,8 +30,8 @@ function SOWRequirementList() {
     const [errors, setErrors] = useState({
         sow: '',
         designation: '',
-        technologies: '',
-        teamSize: ''
+        teamSize: '',
+        technology: []
     }
     );
 
@@ -64,10 +65,22 @@ function SOWRequirementList() {
                 setError(error);
             }
         };
+        const fetchTechnologies = async () => {
+            try {
+                // const techResponse = await axios.get('http://localhost:5574/api/Technology');
+                const techResponse = await axios.get('http://172.17.31.61:5274/api/technology');
+                setTechnologies(techResponse.data);
+            } catch (error) {
+                console.error('There was an error fetching the technologies!', error);
+                setError(error);
+            }
+            setLoading(false);
+        };
 
         fetchSowRequirements();
         fetchSow();
         fetchDesignations();
+        fetchTechnologies();
     }, []);
 
 
@@ -94,17 +107,15 @@ function SOWRequirementList() {
         (SOWRequirement.designation && typeof SOWRequirement.designation === 'string' &&
             SOWRequirement.designation.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (SOWRequirement.teamSize && typeof SOWRequirement.teamSize === 'string' &&
-            SOWRequirement.teamSize.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (SOWRequirement.technologies && typeof SOWRequirement.technologies === 'string' &&
-            SOWRequirement.technologies.toLowerCase().includes(searchQuery.toLowerCase()))
+            SOWRequirement.teamSize.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const handleAdd = () => {
         setCurrentSOWRequirement({
             sow: '',
             designation: '',
-            technologies: '',
-            teamSize: ''
+            teamSize: '',
+            technology: []
         });
         setOpen(true);
     };
@@ -129,7 +140,7 @@ function SOWRequirementList() {
         setConfirmOpen(false);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         let validationErrors = {};
 
         // Name field validation
@@ -155,32 +166,26 @@ function SOWRequirementList() {
         // Clear any previous errors if validation passes
         setErrors({});
 
+        const sowReqToSave = {
+            ...currentSOWRequirement,
+            technology: currentSOWRequirement.technology.map(tech => {
+                const selectedTech = technologies.find(t => t.name === tech);
+                return selectedTech ? selectedTech.id : null;
+            }).filter(id => id !== null) // Convert technology names to IDs
+        };
+
         if (currentSOWRequirement.id) {
             // Update existing SOWRequirement
             //axios.put(`http://localhost:5041/api/SOWRequirement/${currentSOWRequirement.id}`, currentSOWRequirement)
-            axios.put(`http://172.17.31.61:5041/api/sowRequirement/${currentSOWRequirement.id}`, currentSOWRequirement)
-                .then(response => {
-                    console.log(response)
-                    //setSOWRequirements([...SOWRequirements, response.data]);
-                    // setSOWRequirements(response.data);
-                    setSOWRequirements(SOWRequirements.map(tech => tech.id === currentSOWRequirement.id ? response.data : tech));
-                })
-                .catch(error => {
-                    console.error('There was an error updating the SOWRequirement!', error);
-                    setError(error);
-                });
+            // axios.put(`http://172.17.31.61:5041/api/sowRequirement/${currentSOWRequirement.id}`, currentSOWRequirement)           
+            const response = await axios.put(`http://172.17.31.61:5041/api/sowRequirement/${currentSOWRequirement.id}`, sowReqToSave);
+            setSOWRequirements(SOWRequirements.map(tech => tech.id === currentSOWRequirement.id ? response.data : tech));
 
         } else {
             // Add new SOWRequirement
             //axios.post('http://localhost:5041/api/SOWRequirement', currentSOWRequirement)
-            axios.post('http://172.17.31.61:5041/api/sowRequirement', currentSOWRequirement)
-                .then(response => {
-                    setSOWRequirements([...SOWRequirements, response.data]);
-                })
-                .catch(error => {
-                    console.error('There was an error adding the SOWRequirement!', error);
-                    setError(error);
-                });
+            const response = axios.post('http://172.17.31.61:5041/api/sowRequirement', sowReqToSave);
+            setSOWRequirements([...SOWRequirements, response.data]);
         }
         setOpen(false);
 
@@ -212,6 +217,12 @@ function SOWRequirementList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentSOWRequirement({ sow: '', designation: '', teamSize: '', technology: [] }); // Reset the department fields
+        setErrors({ sow: '', designation: '', teamSize: '', technology: [] }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -232,6 +243,14 @@ function SOWRequirementList() {
 
     const handleConfirmYes = () => {
         handleDelete(deleteTechId);
+    };
+
+    const handleTechnologyChange = (event) => {
+        const { value } = event.target;
+        setCurrentSOWRequirement({
+            ...currentSOWRequirement,
+            technology: typeof value === 'string' ? value.split(',') : value  // Handle multiple selection
+        });
     };
     if (loading) {
         return <p>Loading...</p>;
@@ -285,15 +304,6 @@ function SOWRequirementList() {
                                     onClick={() => handleSort('designation')}
                                 >
                                     <b>Designation</b>
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={orderBy === 'technologies'}
-                                    direction={orderBy === 'technologies' ? order : 'asc'}
-                                    onClick={() => handleSort('technologies')}
-                                >
-                                    <b>Technologies</b>
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -360,7 +370,6 @@ function SOWRequirementList() {
                                 {/* <TableCell>{SOWRequirement.id}</TableCell> */}
                                 <TableCell>{SOWRequirement.sow}</TableCell>
                                 <TableCell>{SOWRequirement.designation}</TableCell>
-                                <TableCell>{SOWRequirement.technologies}</TableCell>
                                 <TableCell>{SOWRequirement.teamSize}</TableCell>
                                 <TableCell>{SOWRequirement.isActive ? 'Active' : 'Inactive'}</TableCell>
                                 <TableCell>{SOWRequirement.createdBy}</TableCell>
@@ -422,16 +431,24 @@ function SOWRequirementList() {
                         ))}
                     </Select>
                     {errors.designation && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.designation}</Typography>}
-                    <TextField
-                        margin="dense"
+                    <InputLabel id="demo-simple-select-label">Technology</InputLabel>
+                    <Select
                         label="Technologies"
+                        //  placeholder="Technologies"
                         name="technologies"
-                        value={currentSOWRequirement.technologies}
-                        onChange={handleChange}
+                        multiple
+                        value={currentSOWRequirement.technology || []}
+                        onChange={handleTechnologyChange}
+                        renderValue={(selected) => selected.join(', ')}
                         fullWidth
-                        error={!!errors.technologies} // Display error if exists
-                        helperText={errors.technologies}
-                    />
+                    >
+                        {technologies.map((tech) => (
+                            <MenuItem key={tech.id} value={tech.name}>
+                                <Checkbox checked={Array.isArray(currentSOWRequirement.technology) && currentSOWRequirement.technology.indexOf(tech.name) > -1} />
+                                <ListItemText primary={tech.name} />
+                            </MenuItem>
+                        ))}
+                    </Select>
                     <TextField
                         margin="dense"
                         label="TeamSize"
@@ -444,7 +461,7 @@ function SOWRequirementList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentSOWRequirement.id ? 'Update' : 'Save'}
                     </Button>

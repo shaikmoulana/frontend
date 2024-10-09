@@ -195,6 +195,12 @@ function SOWProposedTeamList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentSOWProposedTeam({ sowRequirement: '', employee: '' }); // Reset the department fields
+        setErrors({ sowRequirement: '', employee: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -389,7 +395,7 @@ function SOWProposedTeamList() {
                     {errors.employee && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.employee}</Typography>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentSOWProposedTeam.id ? 'Update' : 'Save'}
                     </Button>

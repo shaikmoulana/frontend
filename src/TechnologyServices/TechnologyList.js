@@ -183,6 +183,12 @@ function TechnologyList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentTechnology({ name: '', department: '' }); // Reset the department fields
+        setErrors({ name: '', department: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -374,7 +380,7 @@ function TechnologyList() {
                     {errors.department && <Typography fontSize={12} margin="3px 14px 0px" color="error">{errors.department}</Typography>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentTechnology.id ? 'Update' : 'Save'}
                     </Button>

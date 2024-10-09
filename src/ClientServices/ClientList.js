@@ -255,6 +255,14 @@ function ClientList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentClient({
+            name: '', lineofBusiness: '', salesEmployee: '', country: '', city: '', state: '', address: ''
+        }); // Reset the department fields
+        setErrors({ name: '', lineofBusiness: '', salesEmployee: '', country: '', city: '', state: '', address: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -542,7 +550,7 @@ function ClientList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentClient.id ? 'Update' : 'Save'}
                     </Button>

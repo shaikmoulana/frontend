@@ -163,6 +163,12 @@ function ContactTypeList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentContactType({ name: '' }); // Reset the department fields
+        setErrors({ name: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -326,7 +332,7 @@ function ContactTypeList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentContactType.id ? 'Update' : 'Save'}
                     </Button>

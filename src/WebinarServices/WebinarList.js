@@ -228,6 +228,12 @@ function WebinarList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentWebinar({ title: '', speaker: '', status: '', webinarDate: '', numberOfAudience: '' }); // Reset the department fields
+        setErrors({ title: '', speaker: '', status: '', webinarDate: '', numberOfAudience: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -506,7 +512,7 @@ function WebinarList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentWebinar.id ? 'Update' : 'Save'}
                     </Button>

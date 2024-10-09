@@ -146,6 +146,13 @@ function InterviewStatusList() {
             }
         }
     };
+
+    const handleClose = () => {
+        setCurrentInterviewStatus({ status: '' }); // Reset the department fields
+        setErrors({ status: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -307,7 +314,7 @@ function InterviewStatusList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentInterviewStatus.id ? 'Update' : 'Save'}
                     </Button>

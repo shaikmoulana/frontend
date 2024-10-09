@@ -264,6 +264,12 @@ function SOWList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentSOW({ title: '', client: '', project: '', preparedDate: '', submittedDate: '', status: '', comments: '' }); // Reset the department fields
+        setErrors({ title: '', client: '', project: '', preparedDate: '', submittedDate: '', status: '', comments: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -373,6 +379,7 @@ function SOWList() {
                                     active={orderBy === 'preparedDate'}
                                     direction={orderBy === 'preparedDate' ? order : 'asc'}
                                     onClick={() => handleSort('preparedDate')}
+                                    error={!!errors.preparedDate}
                                 >
                                     <b>PreparedDate</b>
                                 </TableSortLabel>
@@ -382,6 +389,7 @@ function SOWList() {
                                     active={orderBy === 'submittedDate'}
                                     direction={orderBy === 'submittedDate' ? order : 'asc'}
                                     onClick={() => handleSort('submittedDate')}
+                                    error={!!errors.submittedDate}
                                 >
                                     <b>SubmittedDate</b>
                                 </TableSortLabel>
@@ -584,7 +592,7 @@ function SOWList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentSOW.id ? 'Update' : 'Save'}
                     </Button>

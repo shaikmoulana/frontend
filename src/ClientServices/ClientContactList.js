@@ -221,6 +221,13 @@ function ClientContactList() {
             }
         }
     };
+    const handleClose = () => {
+        setCurrentClientContact({
+            name: '', contactValue: '', contactType: ''
+        }); // Reset the department fields
+        setErrors({ name: '', contactValue: '', contactType: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
 
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
@@ -431,7 +438,7 @@ function ClientContactList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentClientContact.id ? 'Update' : 'Save'}
                     </Button>

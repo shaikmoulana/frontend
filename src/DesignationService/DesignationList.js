@@ -158,6 +158,13 @@ function DesignationList() {
         }
     };
 
+    const handleClose = () => {
+        setCurrentDesignation({ name: '' }); // Reset the department fields
+        setErrors({ name: '' }); // Reset the error state
+        setOpen(false); // Close the dialog
+    };
+
+
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
@@ -321,7 +328,7 @@ function DesignationList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave} color="primary">
                         {currentDesignation.id ? 'Update' : 'Save'}
                     </Button>
